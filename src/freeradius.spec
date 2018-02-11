@@ -695,12 +695,6 @@ fi
 #moonshot
 %dir %attr(750,root,radiusd) /etc/raddb/mods-config/sql/moonshot-targeted-ids
 %attr(640,root,radiusd) %config(noreplace) /etc/raddb/mods-config/sql/moonshot-targeted-ids/*
-#%dir %attr(750,root,radiusd) /etc/raddb/mods-config/sql/moonshot-targeted-ids/mysql
-#%attr(640,root,radiusd) %config(noreplace) /etc/raddb/mods-config/sql/moonshot-targeted-ids/mysql/*
-#%dir %attr(750,root,radiusd) /etc/raddb/mods-config/sql/moonshot-targeted-ids/postgresql
-#%attr(640,root,radiusd) %config(noreplace) /etc/raddb/mods-config/sql/moonshot-targeted-ids/postgresql/*
-#%dir %attr(750,root,radiusd) /etc/raddb/mods-config/sql/moonshot-targeted-ids/sqlite
-#%attr(640,root,radiusd) %config(noreplace) /etc/raddb/mods-config/sql/moonshot-targeted-ids/sqlite/*
 # ruby
 %if %{?_with_rlm_ruby:1}%{!?_with_rlm_ruby:0}
 %dir %attr(750,root,radiusd) /etc/raddb/mods-config/ruby
