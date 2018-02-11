@@ -1,6 +1,6 @@
 #!/bin/bash
 
-freeradiusVersion="3.0.7"
+freeradiusVersion="3.0.16"
 
 freeradiusUrl="ftp://ftp.freeradius.org/pub/freeradius/freeradius-server-${freeradiusVersion}.tar.bz2"
 
