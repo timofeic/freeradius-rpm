@@ -32,7 +32,7 @@
 
 Summary: High-performance and highly configurable free RADIUS server
 Name: freeradius-us
-Version: 3.0.7
+Version: 3.0.16
 Release: 2%{?dist}
 License: GPLv2+ and LGPLv2+
 Group: System Environment/Daemons
@@ -504,6 +504,8 @@ fi
 /usr/sbin/radiusd
 /usr/sbin/radmin
 # man-pages
+%doc %{_mandir}/man1/dhcpclient.1.gz
+%doc %{_mandir}/man1/rad_counter.1.gz
 %doc %{_mandir}/man1/smbencrypt.1.gz
 %doc %{_mandir}/man5/checkrad.5.gz
 %doc %{_mandir}/man5/clients.conf.5.gz
@@ -552,6 +554,7 @@ fi
 %{_libdir}/freeradius/rlm_attr_filter.so
 %{_libdir}/freeradius/rlm_cache.so
 %{_libdir}/freeradius/rlm_cache_rbtree.so
+%{_libdir}/freeradius/rlm_cache_memcached.so
 %{_libdir}/freeradius/rlm_chap.so
 %{_libdir}/freeradius/rlm_counter.so
 %{_libdir}/freeradius/rlm_cram.so
@@ -561,6 +564,7 @@ fi
 %{_libdir}/freeradius/rlm_digest.so
 %{_libdir}/freeradius/rlm_dynamic_clients.so
 %{_libdir}/freeradius/rlm_eap.so
+%{_libdir}/freeradius/rlm_eap_fast.so
 %{_libdir}/freeradius/rlm_eap_gtc.so
 %{_libdir}/freeradius/rlm_eap_leap.so
 %{_libdir}/freeradius/rlm_eap_md5.so
@@ -584,10 +588,13 @@ fi
 %{_libdir}/freeradius/rlm_preprocess.so
 %{_libdir}/freeradius/rlm_radutmp.so
 %{_libdir}/freeradius/rlm_realm.so
+%{_libdir}/freeradius/rlm_redis.so
+%{_libdir}/freeradius/rlm_rediswho.so
 %{_libdir}/freeradius/rlm_replicate.so
 %{_libdir}/freeradius/rlm_soh.so
 %{_libdir}/freeradius/rlm_sometimes.so
 %{_libdir}/freeradius/rlm_sql.so
+%{_libdir}/freeradius/rlm_sql_freetds.so
 %{_libdir}/freeradius/rlm_sql_null.so
 %{_libdir}/freeradius/rlm_sql_sqlite.so
 %{_libdir}/freeradius/rlm_sqlcounter.so
@@ -618,14 +625,14 @@ fi
 %attr(640,root,radiusd) %config(noreplace) /etc/raddb/trigger.conf
 #%dir %attr(750,root,radiusd) /etc/raddb/sql
 #%attr(640,root,radiusd) %config(noreplace) /etc/raddb/sql/oracle/*
-%attr(640,root,radiusd) %config(noreplace) /etc/raddb/users
+%config(noreplace) /etc/raddb/users
 %dir %attr(770,root,radiusd) /etc/raddb/certs
 %attr(640,root,radiusd) %config(noreplace) /etc/raddb/certs/*
-%attr(750,root,radiusd) /etc/raddb/certs/bootstrap
+#%attr(750,root,radiusd) /etc/raddb/certs/bootstrap
 %dir %attr(750,root,radiusd) /etc/raddb/sites-available
 %attr(640,root,radiusd) %config(noreplace) /etc/raddb/sites-available/*
 %dir %attr(750,root,radiusd) /etc/raddb/sites-enabled
-%attr(640,root,radiusd) %config(noreplace) /etc/raddb/sites-enabled/*
+%config(noreplace) /etc/raddb/sites-enabled/*
 %dir %attr(750,root,radiusd) /etc/raddb/policy.d
 %attr(640,root,radiusd) %config(noreplace) /etc/raddb/policy.d/*
 %attr(640,root,radiusd) %config(noreplace) /etc/raddb/templates.conf
@@ -644,7 +651,7 @@ fi
 %dir %attr(750,root,radiusd) /etc/raddb/mods-config/python
 %attr(640,root,radiusd) %config(noreplace) /etc/raddb/mods-config/python/*
 %dir %attr(750,root,radiusd) /etc/raddb/mods-enabled
-%attr(640,root,radiusd) %config(noreplace) /etc/raddb/mods-enabled/*
+%config(noreplace) /etc/raddb/mods-enabled/*
 # mysql
 %dir %attr(750,root,radiusd) /etc/raddb/mods-config/sql
 %dir %attr(750,root,radiusd) /etc/raddb/mods-config/sql/counter
@@ -678,13 +685,22 @@ fi
 %attr(640,root,radiusd) %config(noreplace) /etc/raddb/mods-config/sql/counter/sqlite/*
 %dir %attr(750,root,radiusd) /etc/raddb/mods-config/sql/cui/sqlite
 %attr(640,root,radiusd) %config(noreplace) /etc/raddb/mods-config/sql/cui/sqlite/*
-%dir %attr(750,root,radiusd) /etc/raddb/mods-config/sql/ippool-dhcp
+#%dir %attr(750,root,radiusd) /etc/raddb/mods-config/sql/ippool-dhcp
 %dir %attr(750,root,radiusd) /etc/raddb/mods-config/sql/ippool-dhcp/sqlite
 %attr(640,root,radiusd) %config(noreplace) /etc/raddb/mods-config/sql/ippool-dhcp/sqlite/*
 %dir %attr(750,root,radiusd) /etc/raddb/mods-config/sql/ippool/sqlite
 %attr(640,root,radiusd) %config(noreplace) /etc/raddb/mods-config/sql/ippool/sqlite/*
 %dir %attr(750,root,radiusd) /etc/raddb/mods-config/sql/main/sqlite
 %attr(640,root,radiusd) %config(noreplace) /etc/raddb/mods-config/sql/main/sqlite/*
+#moonshot
+%dir %attr(750,root,radiusd) /etc/raddb/mods-config/sql/moonshot-targeted-ids
+%attr(640,root,radiusd) %config(noreplace) /etc/raddb/mods-config/sql/moonshot-targeted-ids/*
+#%dir %attr(750,root,radiusd) /etc/raddb/mods-config/sql/moonshot-targeted-ids/mysql
+#%attr(640,root,radiusd) %config(noreplace) /etc/raddb/mods-config/sql/moonshot-targeted-ids/mysql/*
+#%dir %attr(750,root,radiusd) /etc/raddb/mods-config/sql/moonshot-targeted-ids/postgresql
+#%attr(640,root,radiusd) %config(noreplace) /etc/raddb/mods-config/sql/moonshot-targeted-ids/postgresql/*
+#%dir %attr(750,root,radiusd) /etc/raddb/mods-config/sql/moonshot-targeted-ids/sqlite
+#%attr(640,root,radiusd) %config(noreplace) /etc/raddb/mods-config/sql/moonshot-targeted-ids/sqlite/*
 # ruby
 %if %{?_with_rlm_ruby:1}%{!?_with_rlm_ruby:0}
 %dir %attr(750,root,radiusd) /etc/raddb/mods-config/ruby
@@ -791,5 +807,5 @@ fi
 
 
 %changelog
-* Wed Sep 22 2013 Alan DeKok <aland@freeradius.org> - 3.0.0
-- upgrade to latest upstream release
+* Thu Jan 11 2018 Alan DeKok <aland@freeradius.org> - 3.0.16
+- The focus of this release is stability
